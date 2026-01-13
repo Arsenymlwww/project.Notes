@@ -1,0 +1,251 @@
+// ===================================== PROJECT SCRIPT ====================================================
+//  ПЛАН: 
+
+// 1) Должно быть 3 обработчика. один на Форме из которой мы будем брать значения для обновления данных и рендеринга
+//     второй на блоке чекбокса, нужно как-то отфильтровать данные по ключу фейворитс и отрендерить их (метод фильтр?)
+//     третий обработчик на контейнере для заметок. найти его в доме и отлавливать событие с методом клосест. 
+//     связать дом элементы (задачи) по айди с данными через датасет.
+
+// // =======
+// 2)  в хедере перерисовывать значение блока с количеством заметок. количество заметок = длине массива наших данных
+//     попробовать как-то выводить в этот узел длину массива преобразовать в строку(?)
+
+// // =======
+// 3) добавить логику на месседж бокс в который будет выводиться имг в зависимости от условий.
+
+
+
+
+// наши моковые данные ================================
+const MockData = [
+    {
+    id: 1,
+    title: 'Реакт',    // название заметки
+    description: 'Что-то на реактовском', // описание заметки
+    colorNote: 'note-purple', // цвет шапки
+    favorite: false, // добавлена ли в избранное (по умолчанию нет)
+    },{
+    id: 2,
+    title: 'Реакт',    // название заметки
+    description: 'Что-то на реактовском', // описание заметки
+    colorNote: 'note-green', // цвет шапки
+    favorite: false, // добавлена ли в избранное (по умолчанию нет)
+},{
+    id: 3,
+    title: 'Реакт',    // название заметки
+    description: 'Что-то на реактовском', // описание заметки
+    colorNote: 'note-yellow', // цвет шапки
+    favorite: true, // добавлена ли в избранное (по умолчанию нет)
+},{
+    id: 4,
+    title: 'Реакт',    // название заметки
+    description: 'Что-то на реактовском', // описание заметки
+    colorNote: 'note-blue', // цвет шапки
+    favorite: true, // добавлена ли в избранное (по умолчанию нет)
+},
+]
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ======================================== M V C =============================================
+
+
+
+// ============= Data ======================================
+const Model = {
+    colorKeys: {
+        YELLOW: "note-yellow",
+        BLUE: "note-blue",
+        GREEN: "note-green",
+        RED: "note-red",
+        PURPLE: "note-purple"
+    },
+    NotesData: [],//MockData, // пока наши данные моковые
+    DeleteNote(noteId){
+        this.NotesData = this.NotesData.filter((note) => note.id !== noteId)
+        // render ui
+        viewNotes.RenderNotes(this.NotesData)
+    },
+    ToggleNote(noteId){
+        this.NotesData = this.NotesData.map((note) => {
+            if (note.id === noteId){
+                note.favorite = !note.favorite
+            }
+            return note
+        })
+        // render ui
+        viewNotes.RenderNotes(this.NotesData)
+    },
+    AddNote(title, description, colorNote){
+        const favorite = false; //по умолчанию наши задачи не добавляются в избранные
+        const id = new Date().getTime();
+        const newNote = {id, title, description, colorNote, favorite}
+        this.NotesData = [ newNote,...this.NotesData];
+        // render ui
+        viewNotes.RenderNotes(this.NotesData)
+    },
+    favoriteNotes(checked){ // ?
+        if (checked){
+            let NewNotes;
+            NewNotes = this.NotesData.filter((note) => note.favorite === true)
+            viewNotes.RenderNotes(NewNotes);
+        }
+        if (!checked){
+            viewNotes.RenderNotes(this.NotesData)
+        }
+        // let NewNotes;
+        // checked ? NewNotes = this.NotesData.filter((note) => note.favorite === true): this.NotesData;
+        // // render ui
+        // viewNotes.RenderNotes(NewNotes)
+    }, 
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// ====================================== Ui ========================================================
+const viewNotes = {
+    likeBlack: `<img src="images/heart active.svg" alt="act">`,
+    likeEmpty: `<img src="images/heart inactive.svg" alt="act">`,
+    trash: `<img src="images/trash.svg" alt="garbageImg">`,
+    RenderNotes(DataNotes){
+        const currentNotes = document.querySelector("small"); // количество заметок
+        currentNotes.innerHTML = ""; // очищаем перед рендером количество заметок
+        const NotesBox = document.querySelector(".notes-list") // контейнер из дом дерева куда буду аппендить заметки
+        NotesBox.innerHTML = '';
+    // --
+    if(DataNotes.length === 0){
+        const defaultMess = document.createElement('div');
+        defaultMess.classList.add("NoData");
+        defaultMess.textContent = "У вас нет еще ни одной заметки. Заполните поля выше и создайте свою первую заметку!";
+        NotesBox.append(defaultMess);
+    }
+    // --
+        for (let i = 0; i < DataNotes.length; i++){
+            const noteData = DataNotes[i]; // данные одной задачи
+            const note = document.createElement("div") // создаем дом задачу
+            note.classList.add('note', noteData.colorNote);
+            note.dataset.id = noteData.id; // привязываем айди данных и к задачам дом дерева
+            note.innerHTML = `
+                    <div class="note-header">
+                    <h3 class="note-title">${noteData.title}</h3>
+                    <div class="note-get">
+                    <button class="note-like">${noteData.favorite ? this.likeBlack: this.likeEmpty}</button>
+                    <button class="note-delete">${this.trash}</button>
+                    </div>
+                    </div>
+                    <p class="note-text">${noteData.description}</p>
+                    `;
+                    NotesBox.append(note); 
+                    currentNotes.innerHTML = DataNotes.length // количество заметок равно длине массива наших данных
+        }
+    },
+    initNotes(){
+        this.RenderNotes(Model.NotesData);
+        this.logicEvents();
+    },
+    logicEvents(){ // здесь все обработчики
+        const form = document.querySelector("form")
+        const input = document.querySelector("input");
+        const textarea = document.querySelector("textarea");
+        const containerNote = document.querySelector(".notes-list");
+        const FilterCheckBox = document.getElementById("favorites")
+        // обработчмк на форму
+        form.addEventListener("submit", (event) => {
+            event.preventDefault() // блочим стандартное поведение формы
+            const title = document.querySelector("input").value // берем значение с инпута текста
+            const description = document.querySelector("textarea").value // берем описание с нашей текстэрии
+            //  также здесь нужно как то взять выбранный цвет из формы (сделать позже)
+            const colorNote = "note-purple"
+            // передаем контроллеру 
+            controllerNotes.AddNote(title, description, colorNote);
+            input.value = '', textarea.value = ''; // очищаем поля после события
+        });
+        //  обработчик контейнера с задачами 
+        containerNote.addEventListener("click", (event) => {
+            if (event.target.closest(".note-like")){
+                const noteId = Number(event.target.closest(".note").dataset.id);
+                controllerNotes.ToggleNote(noteId)
+            }
+            if (event.target.closest(".note-delete")){
+                const noteId = Number(event.target.closest(".note").dataset.id);
+                controllerNotes.DeleteNote(noteId)
+            }
+        });
+        // обработчик на фильтрацию по избранному (отлавливаем чекбокс)  change возвращает тру фолс согласно гуглу
+        FilterCheckBox.addEventListener("change", (event) => {
+            const StatusCheck = event.target.checked; // чекд работает также как велью из инпутов формы и тд. возвращает тру фолс
+            controllerNotes.favoriteNotes(StatusCheck);
+        })
+    }, 
+}
+
+
+
+
+
+
+
+
+
+//  ========================================= CONTROLLER ============================================
+const controllerNotes = {
+    AddNote(title,description,colorNote){
+        if(title.trim() !== '' && title.length < 50){
+            Model.AddNote(title,description,colorNote)
+            // выводить имг в месседж бокс заметка добавлена
+        }
+    },
+    ToggleNote(noteId){
+        Model.ToggleNote(noteId)
+    },
+    DeleteNote(noteId){
+        Model.DeleteNote(noteId)
+    },
+    favoriteNotes(checked){
+        Model.favoriteNotes(checked)
+    }
+}
+
+
+
+
+
+
+// ======================== инициализация проекта
+function init(){
+    viewNotes.initNotes()
+}
+init()
+
+
+
+
+
+
+
+
+
+
+
+
+
+

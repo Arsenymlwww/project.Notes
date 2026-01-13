@@ -1,0 +1,289 @@
+
+
+
+/* ===========================сброс стилей========================== */
+
+
+*,
+*::before,
+*::after {
+padding: 0px;
+margin: 0px;
+box-sizing: border-box;
+}
+
+
+
+/* ================== общие стили ======================== */
+
+body, html {
+font-family: "Montserrat", sans-serif;
+background-color: rgb(170, 166, 166);
+}
+
+.container{
+    height: 100%;
+    width: 100%;
+    max-width: 1282px;
+    padding: 0 15px;
+    margin: 0 auto;
+}
+
+
+
+
+
+
+
+/* ======================= хедер =========================== */
+
+.header {
+    padding: 18px 0;
+    box-shadow: 0 10px 10px -5px rgba(0, 0, 0, 0.3);
+}
+
+
+.header-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.curWrapper{
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    font-family: Montserrat;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    text-align: right;
+}
+
+small{
+    font-weight: 700;
+    font-size: 18px;
+}
+
+
+
+
+
+
+
+/* =================== main ====================== */
+
+.main {
+    padding: 24px 0;
+}
+
+
+/* ============= форма =============== */
+
+.note-form {
+width: 100%;
+display: flex;
+gap: 24px;
+padding: 24px;
+background: #3e2d2d;
+border-radius: 12px;
+box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.6);
+}
+
+/* Левая часть */
+.note-fields {
+flex: 1;
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.field {
+display: flex;
+flex-direction: column;
+gap: 6px;
+}
+
+.field-label {
+font-size: 14px;
+color: #777;
+}
+
+.field input,
+.field textarea {
+width: 100%;
+padding: 12px 14px;
+border-radius: 8px;
+border: 1px solid #ddd;
+font-size: 14px;
+resize: none;
+}
+
+.field textarea {
+min-height: 80px;
+}
+
+/* Правая часть */
+.note-actions {
+width: 220px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.colors-title {
+font-size: 14px;
+color: #777;
+margin-bottom: 8px;
+}
+
+.colors {
+display: flex;
+gap: 10px;
+margin-bottom: 16px;
+}
+
+.color {
+width: 22px;
+height: 22px;
+border-radius: 50%;
+border: none;
+cursor: pointer;
+}
+
+.color.active {
+    outline: 3px solid white;
+    outline-offset: 2px;
+    transform: scale(1.2); /* чуть увеличим */
+}
+
+.color.yellow { background: #f5e58f; }
+.color.green  { background: #b7f59f; }
+.color.blue   { background: #9fe7f5; }
+.color.red    { background: #f59f9f; }
+.color.pink   { background: #e7a0f5; }
+
+/* Кнопка */
+.add-btn {
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 8px;
+padding: 12px;
+background: #c58e6ee2;
+color: #fff;
+border: none;
+border-radius: 10px;
+font-size: 14px;
+cursor: pointer;
+}
+
+.add-btn:hover {
+opacity: 0.7;
+transition: 0.8s;
+}
+
+.plus {
+font-size: 18px;
+line-height: 1;
+}
+
+
+/* ====================== блок чекбокса избранных  */
+
+.filterCheckBox {
+display: flex;
+justify-content: flex-end;
+margin-top: 26px;
+font-size: 14px;
+color: #555;
+}
+
+.filterCheckBox label {
+display: flex;
+align-items: center;
+gap: 8px;
+cursor: pointer;
+}
+
+
+
+/* ==================== cтили для лишек блоков которые будем рендерить (нотсы)=================== */
+
+
+
+/* ========== контейнер =========== */
+
+.notes-list{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin: 40px 0;
+}
+
+
+
+
+.note {
+width: 300px;
+border-radius: 8px;
+background: #fff;
+box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+overflow: hidden;
+display: flex;
+flex-direction: column;
+}
+
+/* цветные шапки нотсов*/
+.note-yellow { background: #f7e37a; }
+.note-blue   { background: #8be3f3; }
+.note-green  { background: #b8f37a; }
+.note-red    { background: #f58b8b; }
+.note-purple { background: #e3a1f5; }
+
+.note-header {
+padding: 12px 16px;
+display: flex;
+justify-content: space-between;
+align-items: center;
+font-weight: 600;
+}
+
+.note-title {
+font-size: 16px;
+}
+
+.note-get {
+display: flex;
+gap: 8px;
+}
+
+.note-get button {
+background: none;
+border: none;
+cursor: pointer;
+font-size: 16px;
+}
+
+.note-text {
+background: #fff;
+padding: 16px;
+font-size: 14px;
+line-height: 1.5;
+color: #333;
+}
+
+
+
+/* ================= блок с смс по умолчанию =============== */
+
+.NoData{
+    margin: 0 auto;
+    width: 400px;
+    background-color: rgb(58, 56, 56);
+    border-radius: 13px;
+    color: rgb(237, 215, 174);
+    padding: 30px;
+    font-size: 16px;
+    font-weight: 500;
+}

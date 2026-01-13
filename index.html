@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="notesStyle.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="header-wrapper">
+                <a href="#" class="logo-link">
+                    <img src="images/📝Notes.svg" alt="logo-img" class="logo">
+                </a>
+                <div class="curWrapper">
+                    <img src="images/curNote.svg" alt="curNoteImg">
+                    <!-- // в количество заметок должно рендерится длинна массива данных // -->
+                    <span>Всего заметок: <small>0</small></span> 
+                </div>
+            </div>
+        </div>
+    </header>
+    <main class="main">
+        <div class="container">
+            <form class="note-form">
+                <div class="note-fields">
+                    <label class="field">
+                    <span class="field-label">Название заметки</span>
+                    <input type="text" placeholder="Напишите название новой заметки...">
+                    </label>
+                    <label class="field">
+                    <span class="field-label">Описание новой заметки</span>
+                    <textarea placeholder="Напишите описание новой заметки..."></textarea>
+                    </label>
+                </div>
+                <div class="note-actions">
+                    <span class="colors-title">Выберите цвет заметки</span>
+                <div class="colors">
+                    <button type="button" class="color yellow"></button>
+                    <button type="button" class="color green"></button>
+                    <button type="button" class="color blue"></button>
+                    <button type="button" class="color red"></button>
+                    <button type="button" class="color pink"></button>
+                </div>
+                <button type="submit" class="add-btn">
+                <span class="plus">+</span>
+                Добавить заметку
+                </button>
+                </div>
+            </form>
+            <div class="filterCheckBox">
+                <!-- блок с чекбоксом и фильтром -->
+                <label for="">
+                    <input type="checkbox" id="favorites">
+                    Показать только избранные заметки
+                </label>
+            </div>
+            <!-- див контейнер куда буду аппендить заметки -->
+            <div class="notes-list">
+                <!-- mocknotes -->
+                <!-- <div class="note note-yellow">
+                    <div class="note-header">
+                        <h3 class="note-title">Flexbox (CSS)</h3>
+                        <div class="note-get">
+                        <button class="note-like">♡</button>
+                        <button class="note-delete">🗑</button>
+                        </div>
+                    </div>
+                    <p class="note-text">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                    </p>
+                </div>  -->
+            </div>
+            <!-- див контейнер для имг уведомления -->
+            <div class="message">
+            </div>
+            <!-- <div class="NoData"></div> --> 
+        </div>
+    </main>
+    <script src="notes.js"></script>
+</body>
+</html>
