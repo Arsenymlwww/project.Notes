@@ -215,7 +215,7 @@ const viewNotes = {
     },SecretMessage(text, type = "info"){ // метод добавления сообщения уведомления
         const messageBox = document.querySelector(".message") // наше сообщение из дома
         messageBox.textContent = text;
-        messageBox.style.backgroundColor = type === "error"? "red": "green"; // в зависимости от типа смс меняю бэкграунд
+        messageBox.style.backgroundColor = type === "error"? "#db4646ff": "#70d870ff"; // в зависимости от типа смс меняю бэкграунд
         messageBox.style.opacity = "1"; // делаю полностью видимым
         setTimeout(() => {
             messageBox.textContent = "";
