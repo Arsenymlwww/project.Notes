@@ -155,6 +155,7 @@ cursor: pointer;
     outline: 3px solid white;
     outline-offset: 2px;
     transform: scale(1.2); /* чуть увеличим */
+    transition: 0.3s;
 }
 
 .color.yellow { background: #f5e58f; }
@@ -225,7 +226,7 @@ cursor: pointer;
 
 
 .note {
-width: 300px;
+width: 280px;
 border-radius: 8px;
 background: #fff;
 box-shadow: 0 4px 10px rgba(0,0,0,0.1);
@@ -286,4 +287,22 @@ color: #333;
     padding: 30px;
     font-size: 16px;
     font-weight: 500;
+}
+
+
+
+
+/* секретное сообщение стили */
+
+.message {
+    position: fixed;
+    right: 60px;
+    bottom: 40px;
+    width: 200px;
+    min-height: 40px;
+    padding: 10px;
+    border-radius: 12px;
+    transform: translateY(10px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+    z-index: 1000;
 }

@@ -167,14 +167,31 @@ const viewNotes = {
         const input = document.querySelector("input");
         const textarea = document.querySelector("textarea");
         const containerNote = document.querySelector(".notes-list");
-        const FilterCheckBox = document.getElementById("favorites")
+        const FilterCheckBox = document.getElementById("favorites");
+        const colorButtons = document.querySelectorAll(".color"); // все цвета внутри формы
+        // переменная с хранением значения цвета
+        let colorNote = "note-yellow"; // по умолчанию желтый
+        // Обработчик клика по кнопкам цветов (не придумал как проще брать значение выбранной кнопке) 
+        // вешаем обработчик на каждый цвет пробегаясь форичем
+    colorButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+            colorButtons.forEach(b => b.classList.remove("active")); // убрать активный класс если он висит
+            btn.classList.add("active"); // добаавляю класс. учитывая что обработчик висит на каждой кнопке сработает на нажатой
+            // просто приравнием класс кнопки с классом значения которое будем передавать контроллеру
+            if(btn.classList.contains("yellow")) {colorNote = "note-yellow"}
+            if(btn.classList.contains("green"))  {colorNote = "note-green"}
+            if(btn.classList.contains("blue"))   { colorNote = "note-blue"}
+            if(btn.classList.contains("red"))    {colorNote = "note-red"}
+            if(btn.classList.contains("pink"))  {colorNote = "note-purple"}
+        });
+        });
         // обработчмк на форму
         form.addEventListener("submit", (event) => {
             event.preventDefault() // блочим стандартное поведение формы
             const title = document.querySelector("input").value // берем значение с инпута текста
             const description = document.querySelector("textarea").value // берем описание с нашей текстэрии
             //  также здесь нужно как то взять выбранный цвет из формы (сделать позже)
-            const colorNote = "note-purple"
+            // const colorNote = "note-purple"
             // передаем контроллеру 
             controllerNotes.AddNote(title, description, colorNote);
             input.value = '', textarea.value = ''; // очищаем поля после события
@@ -195,7 +212,16 @@ const viewNotes = {
             const StatusCheck = event.target.checked; // чекд работает также как велью из инпутов формы и тд. возвращает тру фолс
             controllerNotes.favoriteNotes(StatusCheck);
         })
-    }, 
+    },SecretMessage(text, type = "info"){ // метод добавления сообщения уведомления
+        const messageBox = document.querySelector(".message") // наше сообщение из дома
+        messageBox.textContent = text;
+        messageBox.style.backgroundColor = type === "error"? "red": "green"; // в зависимости от типа смс меняю бэкграунд
+        messageBox.style.opacity = "1"; // делаю полностью видимым
+        setTimeout(() => {
+            messageBox.textContent = "";
+            messageBox.style.opacity = "0";
+        }, 3000);  //очищаю текст сообщения и делаю фулл невидимым через 3 сек
+    },
 }
 
 
@@ -209,16 +235,23 @@ const viewNotes = {
 //  ========================================= CONTROLLER ============================================
 const controllerNotes = {
     AddNote(title,description,colorNote){
-        if(title.trim() !== '' && title.length < 50){
-            Model.AddNote(title,description,colorNote)
-            // выводить имг в месседж бокс заметка добавлена
+        if(title.trim() === '' || description.trim() === ''){
+            viewNotes.SecretMessage("Заполните все поля!", "error"); // если инпуты пусты обращаемся к методу вью с секретным смс
+            return; 
         }
+        if (title.length > 50){
+            viewNotes.SecretMessage("Максимальная длина заголовка 50 символов!", "error");
+            return;
+        }
+        Model.AddNote(title, description, colorNote);
+        viewNotes.SecretMessage("Заметка добавлена!", "info")
     },
     ToggleNote(noteId){
         Model.ToggleNote(noteId)
     },
     DeleteNote(noteId){
-        Model.DeleteNote(noteId)
+        Model.DeleteNote(noteId);
+        viewNotes.SecretMessage("Заметка удалена!", "info");
     },
     favoriteNotes(checked){
         Model.favoriteNotes(checked)
