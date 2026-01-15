@@ -1,65 +1,6 @@
 // ===================================== PROJECT SCRIPT ====================================================
-//  ПЛАН: 
-
-// 1) Должно быть 3 обработчика. один на Форме из которой мы будем брать значения для обновления данных и рендеринга
-//     второй на блоке чекбокса, нужно как-то отфильтровать данные по ключу фейворитс и отрендерить их (метод фильтр?)
-//     третий обработчик на контейнере для заметок. найти его в доме и отлавливать событие с методом клосест. 
-//     связать дом элементы (задачи) по айди с данными через датасет.
-
-// // =======
-// 2)  в хедере перерисовывать значение блока с количеством заметок. количество заметок = длине массива наших данных
-//     попробовать как-то выводить в этот узел длину массива преобразовать в строку(?)
-
-// // =======
-// 3) добавить логику на месседж бокс в который будет выводиться имг в зависимости от условий.
-
-
-
-
-// наши моковые данные ================================
-const MockData = [
-    {
-    id: 1,
-    title: 'Реакт',    // название заметки
-    description: 'Что-то на реактовском', // описание заметки
-    colorNote: 'note-purple', // цвет шапки
-    favorite: false, // добавлена ли в избранное (по умолчанию нет)
-    },{
-    id: 2,
-    title: 'Реакт',    // название заметки
-    description: 'Что-то на реактовском', // описание заметки
-    colorNote: 'note-green', // цвет шапки
-    favorite: false, // добавлена ли в избранное (по умолчанию нет)
-},{
-    id: 3,
-    title: 'Реакт',    // название заметки
-    description: 'Что-то на реактовском', // описание заметки
-    colorNote: 'note-yellow', // цвет шапки
-    favorite: true, // добавлена ли в избранное (по умолчанию нет)
-},{
-    id: 4,
-    title: 'Реакт',    // название заметки
-    description: 'Что-то на реактовском', // описание заметки
-    colorNote: 'note-blue', // цвет шапки
-    favorite: true, // добавлена ли в избранное (по умолчанию нет)
-},
-]
-
-
-
-
-
-
-
-
-
-
-
-
 
 // ======================================== M V C =============================================
-
-
 
 // ============= Data ======================================
 const Model = {
@@ -70,11 +11,18 @@ const Model = {
         RED: "note-red",
         PURPLE: "note-purple"
     },
-    NotesData: [],//MockData, // пока наши данные моковые
+    NotesData: [],
+    showFavorite: false, // состояние нашего фильтра
+    getVisibleNotes(){
+        if(this.showFavorite){
+            return this.NotesData.filter(note => note.favorite);
+        }
+        return this.NotesData;
+    },
     DeleteNote(noteId){
         this.NotesData = this.NotesData.filter((note) => note.id !== noteId)
         // render ui
-        viewNotes.RenderNotes(this.NotesData)
+        viewNotes.RenderNotes(this.getVisibleNotes())
     },
     ToggleNote(noteId){
         this.NotesData = this.NotesData.map((note) => {
@@ -84,7 +32,7 @@ const Model = {
             return note
         })
         // render ui
-        viewNotes.RenderNotes(this.NotesData)
+        viewNotes.RenderNotes(this.getVisibleNotes())
     },
     AddNote(title, description, colorNote){
         const favorite = false; //по умолчанию наши задачи не добавляются в избранные
@@ -92,29 +40,26 @@ const Model = {
         const newNote = {id, title, description, colorNote, favorite}
         this.NotesData = [ newNote,...this.NotesData];
         // render ui
-        viewNotes.RenderNotes(this.NotesData)
+        viewNotes.RenderNotes(this.getVisibleNotes())
     },
     favoriteNotes(checked){ // ?
-        if (checked){
-            let NewNotes;
-            NewNotes = this.NotesData.filter((note) => note.favorite === true)
-            viewNotes.RenderNotes(NewNotes);
-        }
-        if (!checked){
-            viewNotes.RenderNotes(this.NotesData)
-        }
+        this.showFavorite = checked;
+        //ui
+        viewNotes.RenderNotes(this.getVisibleNotes())
+        // if (checked){
+        //     let NewNotes;
+        //     NewNotes = this.NotesData.filter((note) => note.favorite === true)
+        //     viewNotes.RenderNotes(NewNotes);
+        // }
+        // if (!checked){
+        //     viewNotes.RenderNotes(this.NotesData)
+        // }
         // let NewNotes;
         // checked ? NewNotes = this.NotesData.filter((note) => note.favorite === true): this.NotesData;
         // // render ui
         // viewNotes.RenderNotes(NewNotes)
     }, 
 }
-
-
-
-
-
-
 
 
 
@@ -193,8 +138,11 @@ const viewNotes = {
             //  также здесь нужно как то взять выбранный цвет из формы (сделать позже)
             // const colorNote = "note-purple"
             // передаем контроллеру 
-            controllerNotes.AddNote(title, description, colorNote);
-            input.value = '', textarea.value = ''; // очищаем поля после события
+            const isAdded = controllerNotes.AddNote(title, description, colorNote);
+            if(isAdded){
+                input.value = '', textarea.value = ''; // очищаем поля после события
+            }
+            
         });
         //  обработчик контейнера с задачами 
         containerNote.addEventListener("click", (event) => {
@@ -228,23 +176,20 @@ const viewNotes = {
 
 
 
-
-
-
-
 //  ========================================= CONTROLLER ============================================
 const controllerNotes = {
     AddNote(title,description,colorNote){
         if(title.trim() === '' || description.trim() === ''){
             viewNotes.SecretMessage("Заполните все поля!", "error"); // если инпуты пусты обращаемся к методу вью с секретным смс
-            return; 
+            return false; 
         }
         if (title.length > 50){
             viewNotes.SecretMessage("Максимальная длина заголовка 50 символов!", "error");
-            return;
+            return false;
         }
         Model.AddNote(title, description, colorNote);
-        viewNotes.SecretMessage("Заметка добавлена!", "info")
+        viewNotes.SecretMessage("Заметка добавлена!", "info");
+        return true
     },
     ToggleNote(noteId){
         Model.ToggleNote(noteId)
@@ -257,10 +202,6 @@ const controllerNotes = {
         Model.favoriteNotes(checked)
     }
 }
-
-
-
-
 
 
 // ======================== инициализация проекта
