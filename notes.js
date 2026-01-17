@@ -23,6 +23,8 @@ const Model = {
         this.NotesData = this.NotesData.filter((note) => note.id !== noteId)
         // render ui
         viewNotes.RenderNotes(this.getVisibleNotes())
+        // LS
+        this.save()
     },
     ToggleNote(noteId){
         this.NotesData = this.NotesData.map((note) => {
@@ -33,6 +35,8 @@ const Model = {
         })
         // render ui
         viewNotes.RenderNotes(this.getVisibleNotes())
+        // LS
+        this.save()
     },
     AddNote(title, description, colorNote){
         const favorite = false; //по умолчанию наши задачи не добавляются в избранные
@@ -41,6 +45,8 @@ const Model = {
         this.NotesData = [ newNote,...this.NotesData];
         // render ui
         viewNotes.RenderNotes(this.getVisibleNotes())
+        // LS
+        this.save()
     },
     favoriteNotes(checked){ // ?
         this.showFavorite = checked;
@@ -59,6 +65,13 @@ const Model = {
         // // render ui
         // viewNotes.RenderNotes(NewNotes)
     }, 
+    load(){ // загрузка данных при старте
+        const data = localStorage.getItem("notes");
+        this.NotesData = data ? JSON.parse(data): [];
+    },
+    save(){ // сейв при изменениях
+        localStorage.setItem("notes",JSON.stringify(this.NotesData));
+    },
 }
 
 
@@ -206,6 +219,7 @@ const controllerNotes = {
 
 // ======================== инициализация проекта
 function init(){
+    Model.load();
     viewNotes.initNotes()
 }
 init()
